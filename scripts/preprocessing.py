@@ -3,13 +3,8 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
-def load_data(filepath):
-    df = pd.read_csv(filepath)
-    return df
-
 #Méthode qui supprime toutes les valeurs abérrentes
 def clean_data_1(df):
-    df = df.rename(columns={'Unnamed: 0': 'index_tab'})
     masque = (
         (df['Glucose'] >= 50) &
         (df['BloodPressure'] >= 40) &
@@ -27,7 +22,6 @@ def clean_data_1(df):
 
 #Méthode qui suprime certaines valeurs abérrantes et qui recode 
 def clean_data_2(df):
-    df = df.rename(columns={'Unnamed: 0': 'index_tab'})
     masque = (
         (df['Glucose'] >= 50) &
         (df['BloodPressure'] >= 40) &
@@ -55,22 +49,25 @@ def clean_data_3(df):
         df_clean = df_clean[(df_clean[column] >= lower_bound) & (df_clean[column] <= upper_bound)]
     return df_clean
 
-def make_cluster(data, k ,colonnes_cluster , scaler=True):
-
+def make_cluster(df, k ,colonnes_cluster , scaler=True):
+    df_cluster=df.copy()
     if scaler== True :
-        X= data[colonnes_cluster]
+        X= df[colonnes_cluster]
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
-
-
+    else:
+        X_scaled= df_cluster[colonnes_cluster]
     # Créez le modèle KMeans et entraînez-le sur les données
     kmeans = KMeans(n_clusters=k, random_state=42, n_init='auto')
     kmeans.fit(X_scaled)
-
     # Récupérez les labels (attribution des clusters pour chaque ligne)
     labels = kmeans.labels_
-
+    # Compter le nombre d'éléments par cluster
+    cluster_sizes = pd.Series(labels).value_counts().sort_values(ascending=False)
+    # Créer un dictionnaire de remplacement (nouvel ordre)
+    new_order = {old_label: new_label for new_label, old_label in enumerate(cluster_sizes.index)}
+    # Réattribuer les labels
+    labels = pd.Series(labels).map(new_order).values
     # Ajoutez les labels au DataFrame original (nouvelle colonne 'cluster')
-    data['cluster'] = labels
-
-    return data
+    df_cluster['cluster'] = labels
+    return df_cluster
