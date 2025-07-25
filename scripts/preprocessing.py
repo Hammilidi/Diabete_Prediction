@@ -49,25 +49,26 @@ def clean_data_3(df):
         df_clean = df_clean[(df_clean[column] >= lower_bound) & (df_clean[column] <= upper_bound)]
     return df_clean
 
+#Fonction qui nous permet de créer nos clusters
 def make_cluster(df, k ,colonnes_cluster , scaler=True):
     df_cluster=df.copy()
     if scaler== True :
-        X= df[colonnes_cluster]
+        X= df_cluster[colonnes_cluster]
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
     else:
         X_scaled= df_cluster[colonnes_cluster]
-    # Créez le modèle KMeans et entraînez-le sur les données
+   
     kmeans = KMeans(n_clusters=k, random_state=42, n_init='auto')
     kmeans.fit(X_scaled)
-    # Récupérez les labels (attribution des clusters pour chaque ligne)
+    
     labels = kmeans.labels_
-    # Compter le nombre d'éléments par cluster
+    
     cluster_sizes = pd.Series(labels).value_counts().sort_values(ascending=False)
-    # Créer un dictionnaire de remplacement (nouvel ordre)
+    
     new_order = {old_label: new_label for new_label, old_label in enumerate(cluster_sizes.index)}
-    # Réattribuer les labels
+    
     labels = pd.Series(labels).map(new_order).values
-    # Ajoutez les labels au DataFrame original (nouvelle colonne 'cluster')
+    
     df_cluster['cluster'] = labels
     return df_cluster
