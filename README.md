@@ -1,7 +1,7 @@
 # Prédiction du risque de diabète
 
 ## 📌 Description du Projet
-Ce projet vise à créer des cluster pour les personnes à risque de diabète puis à entrainer un modèle pour predire les clusters :
+Ce projet vise à créer des clusters pour les personnes à risque de diabète puis à entrainer un modèle pour predire les clusters :
 - **Données médicales**
 - **Natures des données** (glucose, blood pressure etc.)
 - **Modèle avancé** : Logistic Regression avec optimisation des hyperparamètres
@@ -9,7 +9,7 @@ Ce projet vise à créer des cluster pour les personnes à risque de diabète pu
 **Approche technique** :
 - Clustering en groupe selon les risques de diabète
 - Comparaison de plusieurs modèles (Random Forest, SVR, Logistic Regression)
-- Optimisation via GridSearchCV
+- Optimisation via GridSearch et CV
 
 ## 📂 Structure des Fichiers
 
